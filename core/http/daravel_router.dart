@@ -60,21 +60,40 @@ class DaravelRouter {
 
   List<DaravelRoute> get routes => _routes;
 
+  /// Get router
   Router get router {
     final router = Router();
+    _buildRoutes(_routes, router);
+    return router;
+  }
 
-    for (final route in _routes) {
+  /// Build routes
+  void _buildRoutes(List<DaravelRoute> routes, Router router,
+      {Router? parentRouter, String? groupPrefix}) {
+    String lastGroupPrefix = '';
+
+    for (final route in routes) {
       if (route.routes.isEmpty) {
-        router.add(route.method, route.path, (req) {
-          return route.handler!(req);
-        });
+        if (groupPrefix == null) {
+          // Linear routes
+          router.add(route.method, route.path, (req) {
+            return route.handler!(req);
+          });
+        } else {
+          // Grouped routes
+          router.add(route.method, route.path, (req) {
+            return route.handler!(req);
+          });
+          parentRouter?.mount("$groupPrefix$lastGroupPrefix", router.call);
+        }
       } else {
-        final nestedRouter = DaravelRouter();
-        nestedRouter._routes.addAll(route.routes);
-        router.mount(route.path, nestedRouter.router.call);
+        // Grouped routes - Recursive section
+        lastGroupPrefix += route.path;
+        final nestedRouter = Router();
+        _buildRoutes(route.routes, nestedRouter,
+            groupPrefix: lastGroupPrefix, parentRouter: router);
+        lastGroupPrefix = lastGroupPrefix.replaceAll(route.path, '');
       }
     }
-
-    return router;
   }
 }
