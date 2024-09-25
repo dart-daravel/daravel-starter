@@ -31,6 +31,22 @@ class DaravelRouter {
     _routes.add(DaravelRoute('PUT', path, handler));
   }
 
+  void patch(String path, Function handler) {
+    _routes.add(DaravelRoute('PATCH', path, handler));
+  }
+
+  void all(String path, Function handler) {
+    _routes.add(DaravelRoute('', path, handler));
+  }
+
+  void options(String path, Function handler) {
+    _routes.add(DaravelRoute('OPTIONS', path, handler));
+  }
+
+  void head(String path, Function handler) {
+    _routes.add(DaravelRoute('HEAD', path, handler));
+  }
+
   void delete(String path, Function handler) {
     _routes.add(DaravelRoute('DELETE', path, handler));
   }
