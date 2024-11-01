@@ -3,4 +3,5 @@ import '../bootstrap/app.dart';
 
 Core app() => core;
 
-String? env(String key) => core.env(key);
+dynamic env<T>(String key, [dynamic defaultValue]) =>
+    core.env(key) ?? defaultValue as T;
