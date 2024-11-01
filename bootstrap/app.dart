@@ -11,9 +11,7 @@ import 'config.dart';
 late final Core core;
 
 void boot(List<String> args, SendPort? sendPort) async {
-  bootConfig();
-  apiRoutes();
-
+  // Create App instance
   core = Core(
     configMap: config,
     routers: [
@@ -23,6 +21,15 @@ void boot(List<String> args, SendPort? sendPort) async {
       LoggerMiddleware(),
     ],
   );
+
+  // Boot Config.
+  bootConfig();
+
+  // Boot Routers.
+  apiRoutes();
+
+  // Boot DB
+  DB.boot(core);
 
   final commandRunner = CommandRunner("dartisan", "The CLI tool for Daravel")
     ..addCommand(ServeCommand(core));
