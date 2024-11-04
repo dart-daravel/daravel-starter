@@ -9,7 +9,7 @@ class Database {
   Map<String, DatabaseConnection> connections = {
     'sqlite': DatabaseConnection(
       driver: 'sqlite',
-      url: env<String>('DB_URL'),
+      url: env<String>('DB_URL', 'database.sqlite'),
       database: 'database.sqlite',
       prefix: '',
       foreignKeyConstraints: env<bool>('DB_FOREIGN_KEYS', true),
