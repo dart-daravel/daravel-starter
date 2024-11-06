@@ -10,10 +10,7 @@ import 'config.dart';
 
 late final Core core;
 
-void boot(List<String> args, SendPort? sendPort) async {
-  bootConfig();
-  apiRoutes();
-
+Future<void> boot(List<String> args, SendPort? sendPort) async {
   core = Core(
     configMap: config,
     routers: [
@@ -22,6 +19,17 @@ void boot(List<String> args, SendPort? sendPort) async {
     globalMiddlewares: [
       LoggerMiddleware(),
     ],
+    boot: (core) {
+      bootConfig();
+      DB.boot(core);
+      apiRoutes();
+    },
+    onBootError: (error) {
+      if (sendPort != null) {
+        sendPort.send(-1);
+      }
+      return false;
+    },
   );
 
   final commandRunner = CommandRunner("dartisan", "The CLI tool for Daravel")
