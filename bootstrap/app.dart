@@ -7,6 +7,7 @@ import 'package:daravel_core/daravel_core.dart';
 import '../routes/api.dart';
 
 import 'config.dart';
+import 'models.dart';
 
 late final Core core;
 
@@ -19,8 +20,10 @@ Future<void> boot(List<String> args, SendPort? sendPort) async {
     globalMiddlewares: [
       LoggerMiddleware(),
     ],
+    models: models,
     boot: (core) {
       bootConfig();
+      bootModels();
       DB.boot(core);
       apiRoutes();
     },
